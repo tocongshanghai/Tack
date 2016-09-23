@@ -12,6 +12,7 @@ import android.os.Handler;
 import android.os.Message;
 import android.support.annotation.Nullable;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -23,6 +24,7 @@ import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ListView;
 import android.widget.PopupWindow;
+import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -41,6 +43,8 @@ import org.json.JSONObject;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Timer;
+import java.util.TimerTask;
 import java.util.WeakHashMap;
 
 import butterknife.Bind;
@@ -87,6 +91,7 @@ public class LoginFragment extends Fragment {
     private LinkedList<String> userNames;
 
     private ProgressDialog downloadProgressDialog; //显示下载进度的窗口
+    private ProgressBar mProgressBar_show;
     private int progress;
     private BroadcastReceiver receiver;
     public Handler handler = new Handler() {
@@ -107,9 +112,10 @@ public class LoginFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_login, container, false);
         ButterKnife.bind(this, view);
-        if(!isLoginFlag) {
+        mProgressBar_show = (ProgressBar) getActivity().findViewById(R.id.pb_show);
+        if (!isLoginFlag) {
             initViews_LoginFragment();
-        }else {
+        } else {
             mRelativeLayout_1.setVisibility(View.INVISIBLE);
             mRelativeLayout_2.setVisibility(View.VISIBLE);
             initView_MyInfoFragment();
@@ -117,10 +123,14 @@ public class LoginFragment extends Fragment {
         return view;
     }
 
-    public  void initView_MyInfoFragment(){
+    public void initView_MyInfoFragment() {
+        Log.i("LoginFragment","-------------3"+mProgressBar_show.getProgress());
+        mProgressBar_show.setProgress(0);
+        Log.i("LoginFragment","-------------4"+mProgressBar_show.getProgress());
         tv_area.setText(area);
 
     }
+
     public void initViews_LoginFragment() {
         pwdUtil = new SaveUserPwdUtil(getActivity());
         receiver = new BroadcastReceiver() {
@@ -274,6 +284,7 @@ public class LoginFragment extends Fragment {
         params.put(Constants.PARA_method, Constants.MD_adminLoginByPda);
         params.put(Constants.PARA_account_user, userName);
         params.put(Constants.PARA_account_pwd, passWord);
+        mProgressBar_show.setProgress(0);
         RetrofitUtil.asynPost(params).enqueue(new Callback<String>() {
             @Override
             public void onResponse(Call<String> call, Response<String> response) {
@@ -308,8 +319,21 @@ public class LoginFragment extends Fragment {
                        /* startActivity(new Intent(LoginActivity.this,FoodTypeListActivity.class).putExtra("area",area));
 
                         finish();*/
+
+                        Timer timer=new Timer();
+                        timer.schedule(new TimerTask() {
+                            int i=0;
+                            @Override
+                            public void run() {
+                                i=i+1;
+                                mProgressBar_show.setProgress(i*10);
+                            }
+                        },0,10);
+                        Log.i("LoginFragment","-------------1"+mProgressBar_show.getProgress());
                         mRelativeLayout_1.setVisibility(View.INVISIBLE);
                         mRelativeLayout_2.setVisibility(View.VISIBLE);
+                        mProgressBar_show.setProgress(0);
+                        Log.i("LoginFragment","-------------2"+mProgressBar_show.getProgress());
                         tv_area.setText(area);
                         isLoginFlag = true;
 
@@ -437,6 +461,14 @@ public class LoginFragment extends Fragment {
         }
     }
 
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        if(receiver!=null){
+            getActivity().unregisterReceiver(receiver);
+            receiver=null;
+        }
+    }
 }
 
 

@@ -3,6 +3,7 @@ package com.tocong.tack.activity;
 import android.app.FragmentManager;
 import android.app.FragmentTransaction;
 import android.os.Bundle;
+import android.widget.ProgressBar;
 
 import com.ashokvarma.bottomnavigation.BottomNavigationBar;
 import com.ashokvarma.bottomnavigation.BottomNavigationItem;
@@ -10,16 +11,20 @@ import com.tocong.tack.R;
 import com.tocong.tack.fragment.FoodInfoFragment;
 import com.tocong.tack.fragment.FoodTypeListFragment;
 import com.tocong.tack.fragment.LoginFragment;
-import com.tocong.tack.fragment.MyInfoFragment;
 import com.tocong.tack.fragment.SearchFragment;
 
+import butterknife.Bind;
+
 public class MainActivity extends BaseActivity implements BottomNavigationBar.OnTabSelectedListener {
+   @Bind(R.id.pb_show)
+    ProgressBar mProgressBar_show;
+
     BottomNavigationBar mBottomNavigationBar;
     private FoodTypeListFragment mFoodTypeListFragment;
     private FoodInfoFragment mFoodInfoFragment;
     private LoginFragment mLoginFragment;
     private SearchFragment mSearchFragment;
-    private MyInfoFragment mMyInfoFragment;
+
     private FragmentManager mFragmentManager;
 
     @Override
@@ -90,6 +95,6 @@ public class MainActivity extends BaseActivity implements BottomNavigationBar.On
         mFoodInfoFragment = new FoodInfoFragment();
         mSearchFragment = new SearchFragment();
         mLoginFragment = new LoginFragment();
-        mMyInfoFragment=new MyInfoFragment();
+
     }
 }
