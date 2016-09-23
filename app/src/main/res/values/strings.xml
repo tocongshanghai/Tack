@@ -1,0 +1,13 @@
+<resources>
+    <string name="app_name">家乐宝</string>
+    <string name="search_order">订单查询</string>
+    <string name="user_name">用户名</string>
+    <string name="password">密码</string>
+    <string name="login">登录</string>
+    <string name="all">全部(0)</string>
+    <string name="sort_no">未分拣(0)</string>
+    <string name="sort_food">菜品分拣</string>
+    <string name="sort_cart">需分拣的菜篮子</string>
+    <string name="search_bar_title">订单查询</string>
+    <string name="tv_empty">暂无数据，刷新试试</string>
+</resources>
