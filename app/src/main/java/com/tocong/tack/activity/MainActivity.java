@@ -1,8 +1,11 @@
 package com.tocong.tack.activity;
 
+import android.app.Fragment;
 import android.app.FragmentManager;
 import android.app.FragmentTransaction;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
+import android.support.v7.app.AppCompatActivity;
 import android.widget.ProgressBar;
 
 import com.ashokvarma.bottomnavigation.BottomNavigationBar;
@@ -10,12 +13,14 @@ import com.ashokvarma.bottomnavigation.BottomNavigationItem;
 import com.tocong.tack.R;
 import com.tocong.tack.fragment.FoodInfoFragment;
 import com.tocong.tack.fragment.FoodTypeListFragment;
+import com.tocong.tack.fragment.FragmentListManager;
 import com.tocong.tack.fragment.LoginFragment;
 import com.tocong.tack.fragment.SearchFragment;
 
 import butterknife.Bind;
+import butterknife.ButterKnife;
 
-public class MainActivity extends BaseActivity implements BottomNavigationBar.OnTabSelectedListener {
+public class MainActivity extends AppCompatActivity implements BottomNavigationBar.OnTabSelectedListener {
    @Bind(R.id.pb_show)
     ProgressBar mProgressBar_show;
 
@@ -28,16 +33,24 @@ public class MainActivity extends BaseActivity implements BottomNavigationBar.On
     private FragmentManager mFragmentManager;
 
     @Override
+    protected void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(getLayoutResID());
+        ButterKnife.bind(this);
+        initViews(savedInstanceState);
+    }
+
+   // @Override
     public void preSetContentView() {
 
     }
 
-    @Override
+  //  @Override
     public int getLayoutResID() {
         return R.layout.activity_main;
     }
 
-    @Override
+   // @Override
     public void initViews(Bundle savedInstanceState) {
         mFragmentManager = getFragmentManager();
         initFragment();
@@ -64,18 +77,52 @@ public class MainActivity extends BaseActivity implements BottomNavigationBar.On
     @Override
     public void onTabSelected(int position) {
         FragmentTransaction fragmentTransaction = mFragmentManager.beginTransaction();
+        Fragment fragment=FragmentListManager.fragmentArrayList.get(FragmentListManager.fragmentArrayList.size()-1);
         switch (position) {
             case 0:
-                fragmentTransaction.replace(R.id.fl_content, mFoodTypeListFragment);
+                if(mFoodTypeListFragment==null){
+                    mFoodTypeListFragment=new FoodTypeListFragment();
+                    fragmentTransaction.hide(fragment);
+                    fragmentTransaction.add(R.id.fl_content, mFoodTypeListFragment,mFoodTypeListFragment.getClass().getName());
+
+                }
+                fragmentTransaction.hide(fragment);
+                fragmentTransaction.show(mFoodTypeListFragment);
+                FragmentListManager.addFragment(mFoodTypeListFragment);
+              //  fragmentTransaction.replace(R.id.fl_content, mFoodTypeListFragment);
                 break;
             case 1:
-                fragmentTransaction.replace(R.id.fl_content, mFoodInfoFragment);
+                if(mFoodInfoFragment==null){
+                    mFoodInfoFragment=new FoodInfoFragment();
+                    fragmentTransaction.hide(fragment);
+                    fragmentTransaction.add(R.id.fl_content, mFoodInfoFragment,mFoodInfoFragment.getClass().getName());
+                }
+                fragmentTransaction.hide(fragment);
+                fragmentTransaction.show(mFoodInfoFragment);
+                FragmentListManager.addFragment(mFoodInfoFragment);
+             //   fragmentTransaction.replace(R.id.fl_content, mFoodInfoFragment);
                 break;
             case 2:
-                fragmentTransaction.replace(R.id.fl_content, mSearchFragment);
+                if(mSearchFragment==null){
+                    mSearchFragment=new SearchFragment();
+                    fragmentTransaction.hide(fragment);
+                    fragmentTransaction.add(R.id.fl_content, mSearchFragment,mSearchFragment.getClass().getName());
+                }
+                fragmentTransaction.hide(fragment);
+                fragmentTransaction.show(mSearchFragment);
+                FragmentListManager.addFragment(mSearchFragment);
+                //fragmentTransaction.replace(R.id.fl_content, mSearchFragment);
                 break;
             case 3:
-                fragmentTransaction.replace(R.id.fl_content, mLoginFragment);
+                if(mLoginFragment==null){
+                    mLoginFragment=new LoginFragment();
+                    fragmentTransaction.hide(fragment);
+                    fragmentTransaction.add(R.id.fl_content, mLoginFragment,mLoginFragment.getClass().getName());
+                }
+                fragmentTransaction.hide(fragment);
+                fragmentTransaction.show(mLoginFragment);
+                FragmentListManager.addFragment(mLoginFragment);
+            //    fragmentTransaction.replace(R.id.fl_content, mLoginFragment);
         }
         fragmentTransaction.commit();
     }
@@ -91,10 +138,7 @@ public class MainActivity extends BaseActivity implements BottomNavigationBar.On
     }
 
     private void initFragment() {
-        mFoodTypeListFragment = new FoodTypeListFragment();
-        mFoodInfoFragment = new FoodInfoFragment();
-        mSearchFragment = new SearchFragment();
         mLoginFragment = new LoginFragment();
-
+        FragmentListManager.addFragment(mLoginFragment);
     }
 }
