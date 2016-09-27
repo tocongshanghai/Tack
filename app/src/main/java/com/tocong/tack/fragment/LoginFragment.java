@@ -31,6 +31,7 @@ import android.widget.TextView;
 import com.lyf.xlibrary.util.AppUtils;
 import com.lyf.xlibrary.util.ToastUtil;
 import com.tocong.tack.R;
+import com.tocong.tack.activity.MainActivity;
 import com.tocong.tack.service.DownLoadService;
 import com.tocong.tack.util.Constants;
 import com.tocong.tack.util.RetrofitUtil;
@@ -159,7 +160,7 @@ public class LoginFragment extends Fragment {
             public void onResponse(Call<String> call, Response<String> response) {
                 try {
                     JSONObject jsonObject = new JSONObject(response.body());
-                   // if (((MainActivity) getActivity()).loadDataException(jsonObject)) {
+                    if (((MainActivity) getActivity()).loadDataException(jsonObject)) {
                         String updateUrl = jsonObject.getJSONObject(Constants.RETURNDATA).getString("latest_url");
                         int serverVersion = Integer.parseInt(jsonObject.getJSONObject(Constants.RETURNDATA).getString("version_code"));
                         // 3.检测
@@ -172,7 +173,7 @@ public class LoginFragment extends Fragment {
                             intent.putExtra("updateUrl", updateUrl);
                             getActivity().startService(intent);
                         }
-                  //  }
+                    }
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
@@ -289,7 +290,7 @@ public class LoginFragment extends Fragment {
             public void onResponse(Call<String> call, Response<String> response) {
                 try {
                     JSONObject jsonObject = new JSONObject(response.body());
-                 //   if (((MainActivity) getActivity()).loadDataException(jsonObject)) {
+                    if (((MainActivity) getActivity()).loadDataException(jsonObject)) {
                         ToastUtil.makeText(getActivity(), "登录成功", 2).show();
                         //id_center 1:浦东 2：浦西
                         area = jsonObject.getJSONObject(Constants.RETURNDATA).getString(Constants.ID_CENTER);
@@ -336,7 +337,7 @@ public class LoginFragment extends Fragment {
                         tv_area.setText(area);
                         isLoginFlag = true;
 
-                  //  }
+                    }
 
                 } catch (JSONException e) {
                     ToastUtil.makeText(getActivity(), Constants.ERRORMSG, 2).show();
