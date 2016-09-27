@@ -22,10 +22,10 @@ public class MainActivity extends BaseActivity implements BottomNavigationBar.On
     ProgressBar mProgressBar_show;
 
     BottomNavigationBar mBottomNavigationBar;
-    private FoodTypeListFragment mFoodTypeListFragment;
-    private FoodInfoFragment mFoodInfoFragment;
-    private LoginFragment mLoginFragment;
-    private SearchFragment mSearchFragment;
+    public FoodTypeListFragment mFoodTypeListFragment;
+    public FoodInfoFragment mFoodInfoFragment;
+    public LoginFragment mLoginFragment;
+    public SearchFragment mSearchFragment;
 
     private FragmentManager mFragmentManager;
 
@@ -49,6 +49,7 @@ public class MainActivity extends BaseActivity implements BottomNavigationBar.On
 
     @Override
     public void initViews(Bundle savedInstanceState) {
+
         mFragmentManager = getFragmentManager();
         initFragment();
         mBottomNavigationBar = (BottomNavigationBar) findViewById(R.id.bottom_navigation_bar);
@@ -86,6 +87,7 @@ public class MainActivity extends BaseActivity implements BottomNavigationBar.On
                 fragmentTransaction.hide(fragment);
                 FragmentListManager.deleteFragment(fragment);
                 fragmentTransaction.show(mFoodTypeListFragment);
+
                 FragmentListManager.addFragment(mFoodTypeListFragment);
                 //  fragmentTransaction.replace(R.id.fl_content, mFoodTypeListFragment);
                 break;

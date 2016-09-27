@@ -7,6 +7,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -336,6 +337,10 @@ public class LoginFragment extends Fragment {
                         Log.i("LoginFragment","-------------2"+mProgressBar_show.getProgress());
                         tv_area.setText(area);
                         isLoginFlag = true;
+                        SharedPreferences sharedPreferences=getActivity().getSharedPreferences("loginrecord",Context.MODE_PRIVATE);
+                        SharedPreferences.Editor editor=sharedPreferences.edit();
+                        editor.putBoolean("isLoginFlag",isLoginFlag);
+                        editor.commit();
 
                     }
 

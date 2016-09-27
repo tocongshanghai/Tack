@@ -1,5 +1,9 @@
 package com.tocong.tack.util;
 
+import android.content.Context;
+import android.content.SharedPreferences;
+import android.widget.Toast;
+
 import com.lyf.xlibrary.util.ActivityLifeManage;
 import com.lyf.xlibrary.util.LogUtil;
 
@@ -16,5 +20,10 @@ public class Application extends android.app.Application{
         LogUtil.LEVEL=Constants.LOG_LEVEL;
         ActivityLifeManage.init(this);
         ActivityLifeManage.getInstance().openCrashHandler();
+        SharedPreferences sharedPreferences=getSharedPreferences("loginrecord", Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor=sharedPreferences.edit();
+        editor.clear();
+        editor.commit();
+        Toast.makeText(this,""+ IsLoginUtil.getUserName(this),Toast.LENGTH_SHORT).show();
     }
 }
