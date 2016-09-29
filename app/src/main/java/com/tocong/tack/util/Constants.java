@@ -23,9 +23,9 @@ public interface Constants {
     /**
      * 测试库
      */
-    //String URL = "http://121.40.155.207/";
+    String URL = "http://121.40.155.207/";
     /** 正式库 */
-   String URL = "http://www.jialebao.cc/";//121.40.205.167
+  // String URL = "http://www.jialebao.cc/";//121.40.205.167
 
     /**
      * 连接服务器失败时提示信息

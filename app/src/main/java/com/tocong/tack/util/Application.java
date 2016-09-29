@@ -20,10 +20,7 @@ public class Application extends android.app.Application{
         LogUtil.LEVEL=Constants.LOG_LEVEL;
         ActivityLifeManage.init(this);
         ActivityLifeManage.getInstance().openCrashHandler();
-        SharedPreferences sharedPreferences=getSharedPreferences("loginrecord", Context.MODE_PRIVATE);
-        SharedPreferences.Editor editor=sharedPreferences.edit();
-        editor.clear();
-        editor.commit();
+
         Toast.makeText(this,""+ IsLoginUtil.getUserName(this),Toast.LENGTH_SHORT).show();
     }
 }
