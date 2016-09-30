@@ -118,47 +118,48 @@ public class FoodInfoFragment extends Fragment {
     public void onHiddenChanged(boolean hidden) {
         super.onHiddenChanged(hidden);
         if (!hidden) {
-            Toast.makeText(getActivity(), "" + food_id, Toast.LENGTH_SHORT).show();
             if (food_id == -1) {
                 Toast.makeText(getActivity(), "请扫描二维码", Toast.LENGTH_SHORT).show();
                 return;
             }
-            if (food_id != -1 && !food_basket) {
-                //获取菜品的订单详情
-                getOrderDetails(food_id);
-            }
-            if (food_basket) {
-                //入篮
-                try {
-                    tp_seq = URLDecoder.decode(tp_seq, "utf-8");
-                    Log.i("FoodInfoActivity", tp_seq);
+            if(MainActivity.onTabSelect_or_onScan) {
+                if (food_id != -1 && !food_basket) {
+                    //获取菜品的订单详情
+                    getOrderDetails(food_id);
+                }
+                if (food_basket) {
+                    //入篮
+                    try {
+                        tp_seq = URLDecoder.decode(tp_seq, "utf-8");
+                        Log.i("FoodInfoActivity", tp_seq);
 
-                    String[] split = tp_seq.split("\\$");
-                    if (orderDetails != null && orderDetails.size() > 0) {
-                        boolean flag = false;
-                        for (OrderDetails or : orderDetails) {
-                            if ((isFreezeLocation(or)).equals(split[0])) {
-                                if (id_order_details != or.getId_detail_order()) {
-                                    is_sort_all = true;
-                                }
-                                id_order_details = or.getId_detail_order();
-                                if ((or.getOrder_number() - or.getPick_num()) > 1 && is_sort_all) {
-                                    sortDialog(or);
+                        String[] split = tp_seq.split("\\$");
+                        if (orderDetails != null && orderDetails.size() > 0) {
+                            boolean flag = false;
+                            for (OrderDetails or : orderDetails) {
+                                if ((isFreezeLocation(or)).equals(split[0])) {
+                                    if (id_order_details != or.getId_detail_order()) {
+                                        is_sort_all = true;
+                                    }
+                                    id_order_details = or.getId_detail_order();
+                                    if ((or.getOrder_number() - or.getPick_num()) > 1 && is_sort_all) {
+                                        sortDialog(or);
+                                    } else {
+                                        sortConfirm(isFreezeLocation(or), "0");
+                                    }
+                                    flag = true;
+                                    break;
                                 } else {
-                                    sortConfirm(isFreezeLocation(or), "0");
+                                    flag = false;
                                 }
-                                flag = true;
-                                break;
-                            } else {
-                                flag = false;
+                            }
+                            if (!flag) {
+                                ToastUtil.makeText(getActivity(), "此库位号没有  " + foodName.getText().toString(), 2).show();
                             }
                         }
-                        if (!flag) {
-                            ToastUtil.makeText(getActivity(), "此库位号没有  " + foodName.getText().toString(), 2).show();
-                        }
+                    } catch (UnsupportedEncodingException e) {
+                        e.printStackTrace();
                     }
-                } catch (UnsupportedEncodingException e) {
-                    e.printStackTrace();
                 }
             }
         }

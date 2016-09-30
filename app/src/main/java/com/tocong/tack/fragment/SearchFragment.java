@@ -189,6 +189,7 @@ public class SearchFragment extends Fragment {
         boolean isLoginFlag = false;
         isLoginFlag = sharedPreferences.getBoolean("isLoginFlag", false);
         if (!isLoginFlag) {
+            Toast.makeText(getActivity(),"请先登录",Toast.LENGTH_SHORT).show();
             return;
         }
         Map<String, String> params = new WeakHashMap<>();
@@ -348,71 +349,72 @@ public class SearchFragment extends Fragment {
                 Toast.makeText(getActivity(), "请扫描库位号或者订单号", Toast.LENGTH_SHORT).show();
                 return;
             }
-            if (!idOder_or_tpSeq.equals(-1) && !basket_food) {
-                if (idOder_or_tpSeq.matches("^[0-9]*-*[0-9]+-[0-9]+-[0-9]+$")) {
-                    //库位号
-                    searchView.setQuery(seq.length > 1 ? seq[1] : "", false);
-                    getOrderDetails(idOder_or_tpSeq);
-                }
-                if (idOder_or_tpSeq.matches("^[0-9]+$")) {
-                    //订单号
-                    searchView.setQuery(idOder_or_tpSeq, true);
-                }
+            if (MainActivity.onTabSelect_or_onScan) {
+                if (!idOder_or_tpSeq.equals(-1) && !basket_food) {
+                    if (idOder_or_tpSeq.matches("^[0-9]*-*[0-9]+-[0-9]+-[0-9]+$")) {
+                        //库位号
+                        searchView.setQuery(seq.length > 1 ? seq[1] : "", false);
+                        getOrderDetails(idOder_or_tpSeq);
+                    }
+                    if (idOder_or_tpSeq.matches("^[0-9]+$")) {
+                        //订单号
+                        searchView.setQuery(idOder_or_tpSeq, true);
+                    }
 
-            }
-            if (basket_food) {
-                if (String.valueOf(food_id).matches("^(69){1}[0-9]{11}$")) {
-                    boolean flag = false;
-                    for (OrderDetails or : orderDetails) {
-                        Log.i("searchOrderActivity", "------------" + or.getFood_info().getFood_bar_code().trim());
-                        if (or.getFood_info().getFood_bar_code().replace(" ", "").equals(String.valueOf(food_id))) {
-                            if (id_order_details != or.getId_detail_order()) {
-                                is_sort_all = true;
+                }
+                if (basket_food) {
+                    if (String.valueOf(food_id).matches("^(69){1}[0-9]{11}$")) {
+                        boolean flag = false;
+                        for (OrderDetails or : orderDetails) {
+                            Log.i("searchOrderActivity", "------------" + or.getFood_info().getFood_bar_code().trim());
+                            if (or.getFood_info().getFood_bar_code().replace(" ", "").equals(String.valueOf(food_id))) {
+                                if (id_order_details != or.getId_detail_order()) {
+                                    is_sort_all = true;
+                                }
+                                id_order_details = or.getId_detail_order();
+                                if ((or.getOrder_number() - or.getPick_num()) > 1 && is_sort_all) {
+                                    sortDialog(or);
+                                } else {
+                                    // sortConfirm(id_order, result, "0");
+                                    sortConfirm(idOder_or_tpSeq, String.valueOf(food_id), "0");
+                                }
+                                flag = true;
+                                break;
                             }
-                            id_order_details = or.getId_detail_order();
-                            if ((or.getOrder_number() - or.getPick_num()) > 1 && is_sort_all) {
-                                sortDialog(or);
-                            } else {
-                                // sortConfirm(id_order, result, "0");
-                                sortConfirm(idOder_or_tpSeq, String.valueOf(food_id), "0");
-                            }
-                            flag = true;
-                            break;
+
                         }
-
-                    }
-                    if (!flag) {
-                        ToastUtil.makeText(getActivity(), "订单不存在此商品", 2).show();
-                    }
-                    return;
-                } else {
-                    if (food_id == 0) {
+                        if (!flag) {
+                            ToastUtil.makeText(getActivity(), "订单不存在此商品", 2).show();
+                        }
+                        return;
+                    } else {
+                        if (food_id == 0) {
+                            return;
+                        }
+                        boolean flag = false;
+                        for (OrderDetails or : orderDetails) {
+                            if (or.getId_food() == food_id) {
+                                if (id_order_details != or.getId_detail_order()) {
+                                    is_sort_all = true;
+                                }
+                                id_order_details = or.getId_detail_order();
+                                if ((or.getOrder_number() - or.getPick_num()) > 1 && is_sort_all) {
+                                    sortDialog(or);
+                                } else {
+                                    // sortConfirm(id_order, id_food + "", "0");
+                                    sortConfirm(idOder_or_tpSeq, food_id + "", "0");
+                                }
+                                flag = true;
+                                break;
+                            }
+                        }
+                        if (!flag) {
+                            ToastUtil.makeText(getActivity(), "订单不存在此商品", 2).show();
+                        }
                         return;
                     }
-                    boolean flag = false;
-                    for (OrderDetails or : orderDetails) {
-                        if (or.getId_food() == food_id) {
-                            if (id_order_details != or.getId_detail_order()) {
-                                is_sort_all = true;
-                            }
-                            id_order_details = or.getId_detail_order();
-                            if ((or.getOrder_number() - or.getPick_num()) > 1 && is_sort_all) {
-                                sortDialog(or);
-                            } else {
-                                // sortConfirm(id_order, id_food + "", "0");
-                                sortConfirm(idOder_or_tpSeq, food_id + "", "0");
-                            }
-                            flag = true;
-                            break;
-                        }
-                    }
-                    if (!flag) {
-                        ToastUtil.makeText(getActivity(), "订单不存在此商品", 2).show();
-                    }
-                    return;
                 }
             }
-
         }
     }
 }

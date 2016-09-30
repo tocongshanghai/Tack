@@ -11,6 +11,7 @@ import android.view.ViewGroup;
 import android.widget.ExpandableListView;
 import android.widget.ScrollView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
@@ -177,6 +178,8 @@ public class FoodTypeListFragment extends Fragment implements ExpandableListView
                     ToastUtil.makeText(getActivity(), Constants.ERRORMSG, 2).show();
                 }
             });
+        }else{
+            Toast.makeText(getActivity(),"请先登录",Toast.LENGTH_SHORT).show();
         }
     }
 
@@ -189,7 +192,7 @@ public class FoodTypeListFragment extends Fragment implements ExpandableListView
     public void onHiddenChanged(boolean hidden) {
         super.onHiddenChanged(hidden);
         if(!hidden){
-            getFoodTypes(true);
+           getFoodTypes(true);
         }
     }
 }

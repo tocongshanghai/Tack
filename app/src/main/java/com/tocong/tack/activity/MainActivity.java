@@ -35,14 +35,7 @@ public class MainActivity extends BaseActivity implements BottomNavigationBar.On
 
     private FragmentManager mFragmentManager;
     private int index;
-   /* @Override
-    protected void onCreate(@Nullable Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(getLayoutResID());
-        ButterKnife.bind(this);
-        initViews(savedInstanceState);
-    }*/
-
+    public static  boolean onTabSelect_or_onScan; // 0是点击底部导航栏，1是扫描
     @Override
     public void preSetContentView() {
 
@@ -55,7 +48,6 @@ public class MainActivity extends BaseActivity implements BottomNavigationBar.On
 
     @Override
     public void initViews(Bundle savedInstanceState) {
-
         mFragmentManager = getFragmentManager();
         initFragment();
         mBottomNavigationBar = (BottomNavigationBar) findViewById(R.id.bottom_navigation_bar);
@@ -81,6 +73,7 @@ public class MainActivity extends BaseActivity implements BottomNavigationBar.On
     @Override
     public void onTabSelected(int position) {
         index = position;
+        onTabSelect_or_onScan=false;
         FragmentTransaction fragmentTransaction = mFragmentManager.beginTransaction();
         Fragment fragment = FragmentListManager.fragmentArrayList.get(FragmentListManager.fragmentArrayList.size() - 1);
         switch (position) {
@@ -154,6 +147,7 @@ public class MainActivity extends BaseActivity implements BottomNavigationBar.On
 
     @Override
     public void getScanResult(String result) {
+        onTabSelect_or_onScan=true;
         FragmentTransaction fragmentTransaction = mFragmentManager.beginTransaction();
         switch (index) {
             case 0:
@@ -177,47 +171,35 @@ public class MainActivity extends BaseActivity implements BottomNavigationBar.On
                             if (id_food == -1) {
                                 return;
                             }
-                           /* startActivityForResult(new Intent(this, FoodInfoActivity.class).putExtra("id_food", id_food), 200);*/
-                            mFoodInfoFragment.food_id=id_food;
-                            mFoodInfoFragment.food_basket=false;
+                            mFoodInfoFragment.food_id = id_food;
+                            mFoodInfoFragment.food_basket = false;
                             fragmentTransaction.hide(mFoodInfoFragment);
                             fragmentTransaction.show(mFoodInfoFragment);
 
                         }
-                        if(result.matches("^(69){1}[0-9]{11}$")){
-                          /*  startActivityForResult(new Intent(this,FoodInfoActivity.class).putExtra("id_food",Long.parseLong(result.trim())),200);*/
-                            mFoodInfoFragment.food_id=Long.parseLong(result.trim());
-                            mFoodInfoFragment.food_basket=false;
+                        if (result.matches("^(69){1}[0-9]{11}$")) {
+                            mFoodInfoFragment.food_id = Long.parseLong(result.trim());
+                            mFoodInfoFragment.food_basket = false;
                             fragmentTransaction.hide(mFoodInfoFragment);
                             fragmentTransaction.show(mFoodInfoFragment);
-                            Log.i("foodtypelistActivity","LOng-----"+Long.parseLong(result.trim()));
-
                         }
-                       /* if (result.matches("^[0-9]+$")) {
-                            startActivity(new Intent(this, SearchOrderActivity.class).putExtra("order_id", result.trim()));
-                            return;
-                        }*/
                         if (result.matches("^[0-9]*-*[0-9]+-[0-9]+-[0-9]+\\$.*$")) {
                            /* String[] str = result.split("\\$");
                             startActivity(new Intent(this, SearchOrderActivity.class).putExtra("seq", str));*/
-                            mFoodInfoFragment.tp_seq=result;
-                            mFoodInfoFragment.food_basket=true;
+                            mFoodInfoFragment.tp_seq = result;
+                            mFoodInfoFragment.food_basket = true;
                             fragmentTransaction.hide(mFoodInfoFragment);
                             fragmentTransaction.show(mFoodInfoFragment);
-
                         }
                     } catch (UnsupportedEncodingException e) {
                         e.printStackTrace();
                     }
                 }
-               break;
+                break;
             case 2:
                 if (result != null) {
                     try {
                         result = URLDecoder.decode(result, "utf-8");
-                        Log.i("FoodTypeListActivity", result);
-
-//            ToastUtil.makeText(this,result,2).show();
                         if (result.contains("http")) {
                             long id_food = -1;
                             try {
@@ -231,39 +213,32 @@ public class MainActivity extends BaseActivity implements BottomNavigationBar.On
                             if (id_food == -1) {
                                 return;
                             }
-                            //startActivityForResult(new Intent(this, FoodInfoActivity.class).putExtra("id_food", id_food), 200);
-                            mSearchFragment.food_id=id_food;
-                            mSearchFragment.basket_food=true;
+                            mSearchFragment.food_id = id_food;
+                            mSearchFragment.basket_food = true;
                             fragmentTransaction.hide(mSearchFragment);
                             fragmentTransaction.show(mSearchFragment);
 
                         }
-                        if(result.matches("^(69){1}[0-9]{11}$")){
-                          //  startActivityForResult(new Intent(this,FoodInfoActivity.class).putExtra("id_food",Long.parseLong(result.trim())),200);
-                           // Log.i("foodtypelistActivity","LOng-----"+Long.parseLong(result.trim()));
-                            mSearchFragment.food_id=Long.parseLong(result.trim());
-                            mSearchFragment.basket_food=true;
+                        if (result.matches("^(69){1}[0-9]{11}$")) {
+                            mSearchFragment.food_id = Long.parseLong(result.trim());
+                            mSearchFragment.basket_food = true;
                             fragmentTransaction.hide(mSearchFragment);
                             fragmentTransaction.show(mSearchFragment);
-
                         }
                         if (result.matches("^[0-9]+$")) {
-                           // startActivity(new Intent(this, SearchOrderActivity.class).putExtra("order_id", result.trim()));
-                            mSearchFragment.idOder_or_tpSeq=result.trim();
-                            mSearchFragment.basket_food=false;
+                            mSearchFragment.idOder_or_tpSeq = result.trim();
+                            mSearchFragment.basket_food = false;
                             fragmentTransaction.hide(mSearchFragment);
                             fragmentTransaction.show(mSearchFragment);
                         }
                         if (result.matches("^[0-9]*-*[0-9]+-[0-9]+-[0-9]+\\$.*$")) {
                             String[] str = result.split("\\$");
-                           // startActivity(new Intent(this, SearchOrderActivity.class).putExtra("seq", str));
-                            mSearchFragment.idOder_or_tpSeq=str[0];
-                            mSearchFragment.seq=str;
-                            mSearchFragment.basket_food=false;
+                            mSearchFragment.idOder_or_tpSeq = str[0];
+                            mSearchFragment.seq = str;
+                            mSearchFragment.basket_food = false;
                             fragmentTransaction.hide(mSearchFragment);
                             fragmentTransaction.show(mSearchFragment);
                         }
-                        // ToastUtil.makeText(FoodTypeListActivity.this, "请扫描正确的二维码", 2).show();
                     } catch (UnsupportedEncodingException e) {
                         e.printStackTrace();
                     }
@@ -278,8 +253,8 @@ public class MainActivity extends BaseActivity implements BottomNavigationBar.On
     @Override
     protected void onResume() {
         super.onResume();
-        SharedPreferences sharedPreferences=getSharedPreferences("loginrecord", Context.MODE_PRIVATE);
-        SharedPreferences.Editor editor=sharedPreferences.edit();
+        SharedPreferences sharedPreferences = getSharedPreferences("loginrecord", Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPreferences.edit();
         editor.clear();
         editor.commit();
     }
